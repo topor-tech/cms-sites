@@ -4,9 +4,12 @@ devops:
  * [ ] front template page
 
 project:
+   * [ ] collect list of resources
 
 front:
- * [ ] template with list of resources  
+ * [ ] template with list of resources
+   * [ ] next
+   * [ ] tanstack
 
 back:
 

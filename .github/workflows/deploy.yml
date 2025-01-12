@@ -1,0 +1,39 @@
+name: Build and Deploy to Dev Server
+
+on:
+  push:
+    branches:
+      - main # Adjust the branch as per your workflow
+      - hack-list-skeleton
+
+jobs:
+  build-and-deploy-hack-list:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+
+    - name: Deploy to Dev Server
+      env:
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+      run: |
+        # Setup SSH
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+        # SSH into the server and execute the deployment commands
+        ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+          # Change directory to the project directory
+          cd /home/github-deploy/hacklist
+
+          # Pull the latest changes from GitHub
+          git pull origin hack-list-skeleton
+
+          # Build the Docker image
+          docker-compose -f hacklist/docker-compose.yml -p hacklist up -d --build
+        EOF

@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,7 @@ export default function Home() {
     <>
       <Head>
         <title>Create Next App</title>
-        <meta name="description" content="Список ресурсов с новостями о хакатонах" />
+        <meta name="description" content="Сайт с расписание хакатонов" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -26,16 +27,21 @@ export default function Home() {
         className={`${styles.page} ${geistSans.variable} ${geistMono.variable}`}
       >
         <main className={styles.main}>
-          <ul>
-            <li>hackathons.pro</li>
-          </ul>
+          <p>
+            Тут скоро будет список хакатонов и ссылки на них
+          </p>
         </main>
         <footer className={styles.footer}>
-          <a
-            href="/"
-          >
-            На главную →
-          </a>
+            <Link href="/other">
+            <Image
+              aria-hidden
+              src="/globe.svg"
+              alt="Globe icon"
+              width={16}
+              height={16}
+            />
+            Где еще искать хакатоны →
+          </Link>
         </footer>
       </div>
     </>

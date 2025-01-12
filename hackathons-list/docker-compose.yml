@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  hack-list-front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "5300:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

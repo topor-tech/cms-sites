@@ -22,7 +22,7 @@ jobs:
         echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         # Debug: Check the SSH key
-        ls -l ~/.ssh/id_rsa
+        cat ~/.ssh/id_rsa
 
     - name: Test SSH Connection (Debugging)
       env:
@@ -30,6 +30,7 @@ jobs:
         DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
       run: |
         echo "Testing SSH connection..."
+        echo $DEPLOY_USER@$DEPLOY_HOST
         ssh -v -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST exit
 
     - name: Deploy to Dev Server

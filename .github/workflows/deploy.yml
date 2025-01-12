@@ -14,22 +14,31 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
+    - name: Setup SSH Key
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        # Debug: Check the SSH key
+        ls -l ~/.ssh/id_rsa
+
+    - name: Test SSH Connection (Debugging)
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      run: |
+        echo "Testing SSH connection..."
+        ssh -v -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST exit
 
     - name: Deploy to Dev Server
       env:
         DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        # Setup SSH
-        mkdir -p ~/.ssh
-        echo $DEPLOY_KEY > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        
-        ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$DEPLOY_HOST
-
         # SSH into the server and execute the deployment commands
-        ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+        ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
           # Change directory to the project directory
           cd /home/github-deploy/hacklist
 

@@ -21,17 +21,6 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        # Debug: Check the SSH key
-        cat ~/.ssh/id_rsa
-
-    - name: Test SSH Connection (Debugging)
-      env:
-        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-      run: |
-        echo "Testing SSH connection..."
-        echo $DEPLOY_USER@$DEPLOY_HOST
-        ssh -v -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST exit
 
     - name: Deploy to Dev Server
       env:
@@ -41,11 +30,12 @@ jobs:
         # SSH into the server and execute the deployment commands
         ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
           # Change directory to the project directory
-          cd /home/github-deploy/hacklist
+          cd /home/github-deploy/hacklist/cms-sites
 
           # Pull the latest changes from GitHub
+          git checkout hack-list-skeleton
           git pull origin hack-list-skeleton
 
           # Build the Docker image
-          docker-compose -f hacklist/docker-compose.yml -p hacklist up -d --build
+          docker compose -f hacklist/docker-compose.yml -p hacklist up -d --build
         EOF

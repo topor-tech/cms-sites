@@ -23,8 +23,10 @@ jobs:
       run: |
         # Setup SSH
         mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+        echo $DEPLOY_KEY > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        
+        ssh -i ~/.ssh/id_rsa $DEPLOY_USER@$DEPLOY_HOST
 
         # SSH into the server and execute the deployment commands
         ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
